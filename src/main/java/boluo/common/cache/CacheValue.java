@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 public class CacheValue {
 
-    public long time;
+    private long time;
     private Object value;
 
 }

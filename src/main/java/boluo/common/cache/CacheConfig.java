@@ -9,13 +9,12 @@ import java.util.concurrent.TimeUnit;
 @Getter
 public class CacheConfig {
 
-    private boolean enable;
-    private int refreshTime;
-    private int expireTime;
+    private String name;
+    private int refreshTime = 10 * 1000;
+    private int expireTime = 60 * 1000;
     private int limit = 1024;
-    private TimeUnit timeUnit;
+    private boolean cacheNullValue = true;
+    private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
     private KeyGenerator keyGenerator;
-    private ValueEncoder valueEncoder;
-    private ValueDecoder valueDecoder;
 
 }

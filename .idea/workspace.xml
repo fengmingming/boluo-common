@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="347aff07-71e4-4e78-bc7e-2206664eefe6" name="Changes" comment="" />
+    <list default="true" id="347aff07-71e4-4e78-bc7e-2206664eefe6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/boluo/common/cache/CacheConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/boluo/common/cache/CacheConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/boluo/common/cache/CacheValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/boluo/common/cache/CacheValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/boluo/common/cache/L1Cache.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/boluo/common/cache/L1Cache.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/boluo/common/cache/L2Cache.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/boluo/common/cache/L2Cache.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/boluo/common/cache/ValueDecoder.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/boluo/common/cache/ValueEncoder.java" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,9 +30,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2wJRb1rznqs1hAzKQVDmuSe8Eqj" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -32,7 +41,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/workspace/JavaProjects/boluo-common"
   }
