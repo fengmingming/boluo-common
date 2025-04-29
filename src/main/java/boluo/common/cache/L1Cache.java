@@ -1,15 +1,16 @@
 package boluo.common.cache;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.common.util.concurrent.Striped;
 
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.locks.Lock;
 import java.util.function.Supplier;
 
 // 本地缓存
 public class L1Cache extends AbstractCache implements Cache {
 
     private final com.github.benmanes.caffeine.cache.Cache<Object, CacheValue> cache;
-    private final ConcurrentSkipListSet<Object> refreshLock = new ConcurrentSkipListSet<>();
+    private final Striped<Lock> striped;
 
     public L1Cache(CacheConfig cacheConfig) {
         super(cacheConfig);
@@ -18,6 +19,7 @@ public class L1Cache extends AbstractCache implements Cache {
                 .maximumSize(cacheConfig.getLimit())
                 .recordStats()
                 .build();
+        this.striped = Striped.lazyWeakLock(cacheConfig.getLimit());
     }
 
     @Override
@@ -51,7 +53,8 @@ public class L1Cache extends AbstractCache implements Cache {
         }
         if(needRefresh(value.getTime())) {
             // refresh
-            if(refreshLock.add(wrapKey)) {
+            Lock lock = striped.get(wrapKey);
+            if(lock.tryLock()) {
                 try {
                     Object v = supplier.get();
                     if(v != null || getCacheConfig().isCacheNullValue()) {
@@ -59,7 +62,7 @@ public class L1Cache extends AbstractCache implements Cache {
                         this.cache.put(wrapKey, value);
                     }
                 }finally {
-                    refreshLock.remove(wrapKey);
+                    lock.unlock();
                 }
             }
         }
