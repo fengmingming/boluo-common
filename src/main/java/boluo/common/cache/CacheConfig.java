@@ -2,14 +2,14 @@ package boluo.common.cache;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.redisson.api.RedissonClient;
 
 import java.util.concurrent.TimeUnit;
 
 @Setter
 @Getter
-@Builder
-@AllArgsConstructor
+@SuperBuilder
 @NoArgsConstructor
 public class CacheConfig {
 
