@@ -7,6 +7,7 @@ import org.redisson.client.codec.Codec;
 import org.redisson.codec.JsonJacksonCodec;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 //redis缓存
@@ -16,9 +17,10 @@ public class L2Cache extends AbstractCache implements Cache{
     private final KeyGenerator keyGenerator = new DefaultKeyGenerator();
     private final Codec codec = new JsonJacksonCodec();
 
-    public L2Cache(RedissonClient redissonClient, CacheConfig cacheConfig) {
+    public L2Cache(CacheConfig cacheConfig) {
         super(cacheConfig);
-        this.redissonClient = redissonClient;
+        Objects.requireNonNull(cacheConfig.getRedissonClient(), "redissonClient is null in l2cache config");
+        this.redissonClient = cacheConfig.getRedissonClient();
     }
 
     @Override

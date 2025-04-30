@@ -1,12 +1,15 @@
 package boluo.common.cache;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.redisson.api.RedissonClient;
 
 import java.util.concurrent.TimeUnit;
 
 @Setter
 @Getter
+@Builder
 public class CacheConfig {
 
     private String name;
@@ -16,5 +19,6 @@ public class CacheConfig {
     private boolean cacheNullValue = true;
     private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
     private KeyGenerator keyGenerator;
+    private RedissonClient redissonClient;
 
 }
