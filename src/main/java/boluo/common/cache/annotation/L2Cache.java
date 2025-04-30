@@ -11,7 +11,9 @@ import java.util.concurrent.TimeUnit;
 @Target(ElementType.METHOD)
 public @interface L2Cache {
 
-    String name() default "";
+    String name() default "default";
+
+    String key();
 
     int refreshTime() default 10 * 1000;
 

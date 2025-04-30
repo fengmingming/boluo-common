@@ -1,5 +1,7 @@
 package boluo.common.cache;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.redisson.api.RBucket;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -13,8 +15,8 @@ import java.util.function.Supplier;
 //redis缓存
 public class L2Cache extends AbstractCache implements Cache{
 
+    private final ObjectMapper om = new ObjectMapper();
     private final RedissonClient redissonClient;
-    private final KeyGenerator keyGenerator = new DefaultKeyGenerator();
     private final Codec codec = new JsonJacksonCodec();
 
     public L2Cache(CacheConfig cacheConfig) {
@@ -97,7 +99,11 @@ public class L2Cache extends AbstractCache implements Cache{
         if(key instanceof String) {
             return String.format("%s:%s", getCacheConfig().getName(), key);
         }else {
-            return String.format("%s:%s", getCacheConfig().getName(), keyGenerator.generate(key));
+            try {
+                return String.format("%s:%s", getCacheConfig().getName(), om.writeValueAsString(key));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
