@@ -7,6 +7,10 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 public @interface CompositeCache {
 
+    String name() default "";
+
+    String key() default "";
+
     L1Cache l1Cache();
 
     L2Cache l2Cache();

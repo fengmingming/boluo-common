@@ -1,7 +1,5 @@
 package boluo.common.cache;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.redisson.api.RBucket;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -10,19 +8,21 @@ import org.redisson.codec.JsonJacksonCodec;
 
 import java.time.Duration;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 //redis缓存
 public class L2Cache extends AbstractCache implements Cache{
 
-    private final ObjectMapper om = new ObjectMapper();
+    private final Function<Object, String> keyConverter;
     private final RedissonClient redissonClient;
     private final Codec codec = new JsonJacksonCodec();
 
-    public L2Cache(CacheConfig cacheConfig) {
+    public L2Cache(RedisCacheConfig cacheConfig) {
         super(cacheConfig);
         Objects.requireNonNull(cacheConfig.getRedissonClient(), "redissonClient is null in l2cache config");
         this.redissonClient = cacheConfig.getRedissonClient();
+        this.keyConverter = cacheConfig.getKeyConverter();
     }
 
     @Override
@@ -99,11 +99,7 @@ public class L2Cache extends AbstractCache implements Cache{
         if(key instanceof String) {
             return String.format("%s:%s", getCacheConfig().getName(), key);
         }else {
-            try {
-                return String.format("%s:%s", getCacheConfig().getName(), om.writeValueAsString(key));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
+            return String.format("%s:%s", getCacheConfig().getName(), keyConverter.apply(key));
         }
     }
 

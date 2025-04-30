@@ -1,4 +1,4 @@
-package boluo.common.cache;
+package boluo.common.cache.aop;
 
 import boluo.common.cache.annotation.CompositeCache;
 import boluo.common.cache.annotation.L1Cache;
@@ -26,19 +26,19 @@ public class CacheConfiguration {
     }
 
     @Bean(name = "boluo.l2CacheAdvisor")
-    public Advisor l2CacheAdvisor() {
+    public Advisor l2CacheAdvisor(ApplicationContext context) {
         DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor();
         advisor.setPointcut(new AnnotationMatchingPointcut(null, L2Cache.class, true));
-        advisor.setAdvice(new L2CacheInterceptor());
+        advisor.setAdvice(new L2CacheInterceptor(context));
         advisor.setOrder(Ordered.HIGHEST_PRECEDENCE + 2);
         return advisor;
     }
 
     @Bean(name = "boluo.compositeCacheAdvisor")
-    public Advisor compositeCacheAdvisor() {
+    public Advisor compositeCacheAdvisor(ApplicationContext context) {
         DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor();
         advisor.setPointcut(new AnnotationMatchingPointcut(null, CompositeCache.class, true));
-        advisor.setAdvice(new CompositeCacheInterceptor());
+        advisor.setAdvice(new CompositeCacheInterceptor(context));
         advisor.setOrder(Ordered.HIGHEST_PRECEDENCE + 3);
         return advisor;
     }

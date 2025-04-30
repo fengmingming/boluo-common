@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 
 public class CompositeCache implements Cache{
 
-
     private final Cache l1Cache;
     private final Cache l2Cache;
 

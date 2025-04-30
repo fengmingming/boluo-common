@@ -1,6 +1,6 @@
 package boluo.common.cache.annotation;
 
-import boluo.common.cache.CacheConfiguration;
+import boluo.common.cache.aop.CacheConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
