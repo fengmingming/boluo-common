@@ -29,4 +29,6 @@ public @interface L2Cache {
 
     Class<? extends KeyConverter> keyConverter() default DefaultKeyConverter.class;
 
+    String clientBeanName() default "";
+
 }

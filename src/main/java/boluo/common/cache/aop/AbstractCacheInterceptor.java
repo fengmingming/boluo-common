@@ -95,14 +95,16 @@ public abstract class AbstractCacheInterceptor implements MethodInterceptor {
         }
     }
 
-    protected RedissonClient buildRedissonClient() {
+    protected RedissonClient buildRedissonClient(String clientBeanName) {
+        RedissonClient redissonClient = null;
         Map<String, RedissonClient> map = context.getBeansOfType(RedissonClient.class, true, true);
         if(!map.isEmpty()) {
-            return map.values().stream().findFirst().get();
-        }else {
-            log.error("RedissonClient is not found in spring context");
-            return null;
+            redissonClient = map.entrySet().stream().filter(it -> !StringUtils.hasText(clientBeanName) || it.getKey().equals(clientBeanName)).findFirst().map(Map.Entry::getValue).orElseGet(() -> null);
         }
+        if(redissonClient == null) {
+            log.error("RedissonClient is not found in spring context");
+        }
+        return redissonClient;
     }
 
     protected ObjectMapper buildObjectMapper() {
@@ -139,7 +141,7 @@ public abstract class AbstractCacheInterceptor implements MethodInterceptor {
         }
         KeyGenerator keyGenerator = buildKeyGenerator(l2CacheA.keyGenerator());
         KeyConverter KeyConverter = buildKeyConverter(l2CacheA.keyConverter());
-        RedissonClient redissonClient = buildRedissonClient();
+        RedissonClient redissonClient = buildRedissonClient(l2CacheA.clientBeanName());
         ObjectMapper objectMapper = buildObjectMapper();
         return L2CacheConfig.builder().name(name).refreshTime(l2CacheA.refreshTime())
                 .expireTime(l2CacheA.expireTime()).timeUnit(l2CacheA.timeUnit()).cacheNullValue(l2CacheA.cacheNullValue())
