@@ -35,7 +35,7 @@ public class CacheManager {
     public static Cache buildCompositeCache(String name, CacheConfig l1Config, L2CacheConfig l2Config) {
         Cache cache = getCache(name);
         if(cache == null) {
-            return cacheMap.computeIfAbsent(name, key -> new CompositeCache(buildL1Cache(l1Config), buildL2Cache(l2Config)));
+            return cacheMap.computeIfAbsent(name, key -> new CompositeCache(name, buildL1Cache(l1Config), buildL2Cache(l2Config)));
         }else {
             return cache;
         }
