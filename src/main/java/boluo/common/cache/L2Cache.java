@@ -1,5 +1,7 @@
 package boluo.common.cache;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBucket;
 import org.redisson.api.RLock;
@@ -18,7 +20,7 @@ public class L2Cache extends AbstractCache implements Cache{
 
     private final Function<Object, String> keyConverter;
     private final RedissonClient redissonClient;
-    private final Codec codec = new JsonJacksonCodec();
+    private final Codec codec;
 
     public L2Cache(L2CacheConfig cacheConfig) {
         super(cacheConfig);
@@ -26,6 +28,9 @@ public class L2Cache extends AbstractCache implements Cache{
         Objects.requireNonNull(cacheConfig.getKeyConverter(), "keyConverter is null in l2cache config");
         this.redissonClient = cacheConfig.getRedissonClient();
         this.keyConverter = cacheConfig.getKeyConverter();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        codec = new JsonJacksonCodec(objectMapper);
         if(log.isDebugEnabled()) {
             log.debug("new cache with {}", cacheConfig);
         }
