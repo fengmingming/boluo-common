@@ -4,6 +4,8 @@ import java.util.function.Supplier;
 
 public interface Cache {
 
+    public String getName();
+
     public void put(Object key, Object value);
 
     public Object get(Object key);

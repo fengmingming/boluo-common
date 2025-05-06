@@ -5,12 +5,18 @@ import java.util.function.Supplier;
 
 public class CompositeCache implements Cache{
 
+    private final String name;
     private final Cache l1Cache;
     private final Cache l2Cache;
 
-    public CompositeCache(Cache l1Cache, Cache l2Cache) {
+    public CompositeCache(String name, Cache l1Cache, Cache l2Cache) {
+        this.name = name;
         this.l1Cache = Objects.requireNonNull(l1Cache, "l1Cache is null");
         this.l2Cache = Objects.requireNonNull(l2Cache, "l2Cache is null");
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     @Override

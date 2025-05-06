@@ -14,6 +14,10 @@ public abstract class AbstractCache {
         }
     }
 
+    public String getName() {
+        return this.cacheConfig.getName();
+    }
+
     protected CacheValue buildCacheValue(Object value) {
         CacheValue wrapValue = new CacheValue();
         wrapValue.setTime(System.currentTimeMillis());

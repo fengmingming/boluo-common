@@ -1,5 +1,6 @@
 package boluo.common.cache;
 
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBucket;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -12,6 +13,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 //redis缓存
+@Slf4j
 public class L2Cache extends AbstractCache implements Cache{
 
     private final Function<Object, String> keyConverter;
@@ -24,10 +26,16 @@ public class L2Cache extends AbstractCache implements Cache{
         Objects.requireNonNull(cacheConfig.getKeyConverter(), "keyConverter is null in l2cache config");
         this.redissonClient = cacheConfig.getRedissonClient();
         this.keyConverter = cacheConfig.getKeyConverter();
+        if(log.isDebugEnabled()) {
+            log.debug("new cache with {}", cacheConfig);
+        }
     }
 
     @Override
     public void put(Object key, Object value) {
+        if(log.isDebugEnabled()) {
+            log.debug("cache {} put {},{}", getName(), key, value);
+        }
         if(value != null || getCacheConfig().isCacheNullValue()) {
             String redisKey = generateRedisKey(key);
             RBucket<CacheValue> bucket = redissonClient.getBucket(redisKey, codec);
@@ -37,6 +45,9 @@ public class L2Cache extends AbstractCache implements Cache{
 
     @Override
     public Object get(Object key) {
+        if(log.isDebugEnabled()) {
+            log.debug("cache {} get {}", getName(), key);
+        }
         String redisKey = generateRedisKey(key);
         RBucket<CacheValue> bucket = redissonClient.getBucket(redisKey, codec);
         CacheValue value = bucket.get();
@@ -46,12 +57,18 @@ public class L2Cache extends AbstractCache implements Cache{
 
     @Override
     public Object get(Object key, Supplier<Object> supplier) {
+        if(log.isDebugEnabled()) {
+            log.debug("cache {} get {}", getName(), key);
+        }
         String redisKey = generateRedisKey(key);
         RBucket<CacheValue> bucket = redissonClient.getBucket(redisKey, codec);
         CacheValue value = bucket.get();
         if(value == null) {
             RLock lock = redissonClient.getLock(String.format("%s:lock", redisKey));
             lock.lock(getCacheConfig().getExpireTime(), getCacheConfig().getTimeUnit());
+            if(log.isDebugEnabled()) {
+                log.debug("cache {} load {}", getName(), key);
+            }
             try{
                 value = bucket.get();
                 if(value == null) {
@@ -77,6 +94,9 @@ public class L2Cache extends AbstractCache implements Cache{
                 throw new RuntimeException(e);
             }
             if(executable) {
+                if(log.isDebugEnabled()) {
+                    log.debug("cache {} refresh {}", getName(), key);
+                }
                 try{
                     Object v = supplier.get();
                     if(v != null || getCacheConfig().isCacheNullValue()) {
@@ -93,6 +113,9 @@ public class L2Cache extends AbstractCache implements Cache{
 
     @Override
     public void remove(Object key) {
+        if(log.isDebugEnabled()) {
+            log.debug("cache {} remove {}", getName(), key);
+        }
         String redisKey = generateRedisKey(key);
         RBucket<CacheValue> bucket = redissonClient.getBucket(redisKey, codec);
         bucket.delete();

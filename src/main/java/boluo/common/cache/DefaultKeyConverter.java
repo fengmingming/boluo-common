@@ -9,6 +9,9 @@ public class DefaultKeyConverter implements KeyConverter{
 
     @Override
     public String apply(Object o) {
+        if(o instanceof String s) {
+            return s;
+        }
         try {
             return objectMapper.writeValueAsString(o);
         } catch (JsonProcessingException e) {

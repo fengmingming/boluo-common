@@ -3,15 +3,21 @@ package boluo.common.cache.aop;
 import boluo.common.cache.*;
 import boluo.common.cache.annotation.L1Cache;
 import boluo.common.cache.annotation.L2Cache;
+import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.redisson.api.RedissonClient;
 import org.springframework.context.ApplicationContext;
+import org.springframework.expression.spel.standard.SpelExpression;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.Map;
 
+@Slf4j
 public abstract class AbstractCacheInterceptor implements MethodInterceptor {
 
     protected final ApplicationContext context;
@@ -27,6 +33,9 @@ public abstract class AbstractCacheInterceptor implements MethodInterceptor {
             return invocation.proceed();
         }
         Object key = generateKey(holder.getKey(), invocation.getMethod(), invocation.getArguments());
+        if(log.isDebugEnabled()) {
+            log.debug("{} cache interceptor {},{}", holder.getCache().getName(), holder.getKey(), key);
+        }
         return holder.getCache().get(key, () -> {
             try {
                 return invocation.proceed();
@@ -36,12 +45,23 @@ public abstract class AbstractCacheInterceptor implements MethodInterceptor {
         });
     }
 
-    protected String generateKey(String key, Method m, Object[] args) {
-        return key;
+    protected Object generateKey(String key, Method m, Object[] args) {
+        if(StringUtils.hasText(key)) {
+            SpelExpressionParser parser = new SpelExpressionParser();
+            SpelExpression expression = parser.parseRaw(key);
+            StandardEvaluationContext context = new StandardEvaluationContext();
+            Parameter[] parameters = m.getParameters();
+            for(int i = 0,j = m.getParameterCount();i < j;i++) {
+                context.setVariable(parameters[i].getName(), args[i]);
+            }
+            return expression.getValue(context, String.class);
+        }else {
+            return args;
+        }
     }
 
     protected String generateCacheName(Method m) {
-        return null;
+        return String.format("%s.%s", m.getClass().getSimpleName(), m.getName());
     }
 
     protected KeyGenerator buildKeyGenerator(Class<? extends KeyGenerator> clazz) {

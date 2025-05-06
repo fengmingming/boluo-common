@@ -3,6 +3,7 @@ package boluo.common.cache;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.redisson.api.RedissonClient;
 
@@ -10,6 +11,7 @@ import org.redisson.api.RedissonClient;
 @Getter
 @SuperBuilder
 @NoArgsConstructor
+@ToString
 public class L2CacheConfig extends CacheConfig{
 
     private RedissonClient redissonClient;
