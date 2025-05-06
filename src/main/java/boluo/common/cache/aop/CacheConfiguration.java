@@ -10,10 +10,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.Ordered;
 
 @Configuration
 @ConditionalOnProperty(value = "boluo.cache.enable", havingValue = "true", matchIfMissing = true)
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class CacheConfiguration {
 
     @Bean(name = "boluo.l1CacheAdvisor")
