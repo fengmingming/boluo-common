@@ -6,15 +6,13 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.redisson.api.RedissonClient;
 
-import java.util.function.Function;
-
 @Setter
 @Getter
 @SuperBuilder
 @NoArgsConstructor
-public class RedisCacheConfig extends CacheConfig{
+public class L2CacheConfig extends CacheConfig{
 
     private RedissonClient redissonClient;
-    private Function<Object, String> keyConverter;
+    private KeyConverter keyConverter;
 
 }

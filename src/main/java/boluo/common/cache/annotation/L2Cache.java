@@ -1,6 +1,8 @@
 package boluo.common.cache.annotation;
 
+import boluo.common.cache.DefaultKeyConverter;
 import boluo.common.cache.DefaultKeyGenerator;
+import boluo.common.cache.KeyConverter;
 import boluo.common.cache.KeyGenerator;
 
 import java.lang.annotation.*;
@@ -24,5 +26,7 @@ public @interface L2Cache {
     TimeUnit timeUnit() default TimeUnit.MILLISECONDS;
 
     Class<? extends KeyGenerator> keyGenerator() default DefaultKeyGenerator.class;
+
+    Class<? extends KeyConverter> keyConverter() default DefaultKeyConverter.class;
 
 }

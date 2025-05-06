@@ -18,9 +18,10 @@ public class L2Cache extends AbstractCache implements Cache{
     private final RedissonClient redissonClient;
     private final Codec codec = new JsonJacksonCodec();
 
-    public L2Cache(RedisCacheConfig cacheConfig) {
+    public L2Cache(L2CacheConfig cacheConfig) {
         super(cacheConfig);
         Objects.requireNonNull(cacheConfig.getRedissonClient(), "redissonClient is null in l2cache config");
+        Objects.requireNonNull(cacheConfig.getKeyConverter(), "keyConverter is null in l2cache config");
         this.redissonClient = cacheConfig.getRedissonClient();
         this.keyConverter = cacheConfig.getKeyConverter();
     }
@@ -52,13 +53,16 @@ public class L2Cache extends AbstractCache implements Cache{
             RLock lock = redissonClient.getLock(String.format("%s:lock", redisKey));
             lock.lock(getCacheConfig().getExpireTime(), getCacheConfig().getTimeUnit());
             try{
-                Object v = supplier.get();
-                if(v != null || getCacheConfig().isCacheNullValue()) {
-                    value = buildCacheValue(v);
-                    bucket.set(value, Duration.ofMillis(getCacheConfig().getTimeUnit().toMillis(getCacheConfig().getExpireTime())));
-                    return value.getValue();
-                }else {
-                    return null;
+                value = bucket.get();
+                if(value == null) {
+                    Object v = supplier.get();
+                    if(v != null || getCacheConfig().isCacheNullValue()) {
+                        value = buildCacheValue(v);
+                        bucket.set(value, Duration.ofMillis(getCacheConfig().getTimeUnit().toMillis(getCacheConfig().getExpireTime())));
+                        return value.getValue();
+                    }else {
+                        return null;
+                    }
                 }
             }finally {
                 lock.unlock();
@@ -66,7 +70,7 @@ public class L2Cache extends AbstractCache implements Cache{
         }
         if(needRefresh(value.getTime())) {
             RLock lock = redissonClient.getLock(String.format("%s:lock", redisKey));
-            boolean executable = false;
+            boolean executable;
             try {
                 executable = lock.tryLock(0, getCacheConfig().getExpireTime(), getCacheConfig().getTimeUnit());
             } catch (InterruptedException e) {

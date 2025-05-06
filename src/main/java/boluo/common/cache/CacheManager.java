@@ -22,7 +22,7 @@ public class CacheManager {
         }
     }
 
-    public static Cache buildL2Cache(RedisCacheConfig config) {
+    public static Cache buildL2Cache(L2CacheConfig config) {
         Objects.requireNonNull(config, "cache config is null in cache config");
         Cache cache = getCache(config.getName());
         if(cache == null) {
@@ -32,7 +32,7 @@ public class CacheManager {
         }
     }
 
-    public static Cache buildCompositeCache(String name, CacheConfig l1Config, RedisCacheConfig l2Config) {
+    public static Cache buildCompositeCache(String name, CacheConfig l1Config, L2CacheConfig l2Config) {
         Cache cache = getCache(name);
         if(cache == null) {
             return cacheMap.computeIfAbsent(name, key -> new CompositeCache(buildL1Cache(l1Config), buildL2Cache(l2Config)));
