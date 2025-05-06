@@ -1,5 +1,6 @@
 package boluo.common.cache;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,5 +17,6 @@ public class L2CacheConfig extends CacheConfig{
 
     private RedissonClient redissonClient;
     private KeyConverter keyConverter;
+    private ObjectMapper objectMapper;
 
 }

@@ -26,11 +26,10 @@ public class L2Cache extends AbstractCache implements Cache{
         super(cacheConfig);
         Objects.requireNonNull(cacheConfig.getRedissonClient(), "redissonClient is null in l2cache config");
         Objects.requireNonNull(cacheConfig.getKeyConverter(), "keyConverter is null in l2cache config");
+        Objects.requireNonNull(cacheConfig.getObjectMapper(), "objectMapper is null in l2cache config");
         this.redissonClient = cacheConfig.getRedissonClient();
         this.keyConverter = cacheConfig.getKeyConverter();
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        codec = new JsonJacksonCodec(objectMapper);
+        codec = new JsonJacksonCodec(cacheConfig.getObjectMapper());
         if(log.isDebugEnabled()) {
             log.debug("new cache with {}", cacheConfig);
         }
