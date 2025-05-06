@@ -26,11 +26,17 @@ public class CompositeCacheInterceptor extends AbstractCacheInterceptor {
         if(holder == null) {
             CompositeCache cacheA = AnnotationUtils.findAnnotation(m, CompositeCache.class);
             holder = holderMap.computeIfAbsent(m, key -> {
-                CacheConfig l1CacheConfig = buildCacheConfig(cacheA.l1Cache(), m);
-                L2CacheConfig l2CacheConfig = buildCacheConfig(cacheA.l2Cache(), m);
                 String name = cacheA.name();
                 if(!StringUtils.hasText(name)) {
                     name = generateCacheName(m);
+                }
+                CacheConfig l1CacheConfig = buildCacheConfig(cacheA.l1Cache(), m);
+                if(!StringUtils.hasText(cacheA.l1Cache().name())) {
+                    l1CacheConfig.setName(name + ":l1");
+                }
+                L2CacheConfig l2CacheConfig = buildCacheConfig(cacheA.l2Cache(), m);
+                if(!StringUtils.hasText(cacheA.l2Cache().name())) {
+                    l2CacheConfig.setName(name + ":l2");
                 }
                 return CacheHolder.builder().cache(CacheManager.buildCompositeCache(name, l1CacheConfig, l2CacheConfig)).key(cacheA.key()).build();
             });

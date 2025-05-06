@@ -61,7 +61,7 @@ public abstract class AbstractCacheInterceptor implements MethodInterceptor {
     }
 
     protected String generateCacheName(Method m) {
-        return String.format("%s.%s", m.getClass().getSimpleName(), m.getName());
+        return String.format("%s.%s", m.getDeclaringClass().getSimpleName(), m.getName());
     }
 
     protected KeyGenerator buildKeyGenerator(Class<? extends KeyGenerator> clazz) {
