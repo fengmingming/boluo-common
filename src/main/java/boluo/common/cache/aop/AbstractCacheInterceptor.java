@@ -3,6 +3,7 @@ package boluo.common.cache.aop;
 import boluo.common.cache.*;
 import boluo.common.cache.annotation.L1Cache;
 import boluo.common.cache.annotation.L2Cache;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -59,7 +60,12 @@ public abstract class AbstractCacheInterceptor implements MethodInterceptor {
             }
             return expression.getValue(context, String.class);
         }else {
-            return args;
+            ObjectMapper objectMapper = buildObjectMapper();
+            try {
+                return objectMapper.writeValueAsString(args);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

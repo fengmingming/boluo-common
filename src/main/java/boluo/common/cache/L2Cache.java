@@ -93,7 +93,7 @@ public class L2Cache extends AbstractCache implements Cache{
             RLock lock = redissonClient.getLock(String.format("%s:lock", redisKey));
             boolean executable;
             try {
-                executable = lock.tryLock(0, getCacheConfig().getExpireTime(), getCacheConfig().getTimeUnit());
+                executable = lock.tryLock(0, getCacheConfig().getRefreshTime(), getCacheConfig().getTimeUnit());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
